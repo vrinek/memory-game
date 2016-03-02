@@ -1,40 +1,9 @@
 extern crate rand;
 use rand::Rng;
 use std::io;
-use std::fmt;
-use std::io::Write;
 
-#[derive(Debug)]
-enum Facing {
-    Up,
-    Down,
-}
-
-#[derive(Debug)]
-struct Card {
-    facing: Facing,
-    number: u8,
-}
-
-impl Card {
-    fn new(number: u8) -> Card {
-        Card { facing: Facing::Down, number: number }
-    }
-    
-    fn turn_up(&mut self) {
-        self.facing = Facing::Up;
-    }
-}
-
-impl fmt::Display for Card {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.facing {
-            Facing::Up => write!(f, "[{}]", self.number),
-            Facing::Down => write!(f, "[  ]"),
-        }
-        
-    }
-}
+mod card;
+use card::Card;
 
 fn main() {
     let mut deck: Vec<Card> = vec![];
@@ -50,7 +19,7 @@ fn main() {
     loop {
         display_deck(&deck);
 
-        println!("Please enter a number from 1-18:");
+        println!("Please enter a number from 1-{}:", deck.len());
 
         let mut picked_card_index = String::new();
         io::stdin().read_line(&mut picked_card_index)
