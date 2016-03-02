@@ -1,23 +1,17 @@
 extern crate rand;
-use rand::Rng;
+
 use std::io;
 
 mod card;
-use card::Card;
+mod deck;
+
+use deck::Deck;
 
 fn main() {
-    let mut deck: Vec<Card> = vec![];
-    for i in 1..9 {
-        deck.push(Card::new(i));
-        deck.push(Card::new(i));
-    }
-
-    let mut rng = rand::weak_rng();
-    rng.shuffle(&mut deck);
-    drop(rng);
+    let mut deck = Deck::new(8);
 
     loop {
-        display_deck(&deck);
+        deck.display_cards();
 
         println!("Please enter a number from 1-{}:", deck.len());
 
@@ -30,13 +24,14 @@ fn main() {
             Err(_) => continue,
         };
 
-        deck[picked_card_index - 1].turn_up();
-    }
-}
+        if picked_card_index > deck.len() {
+            continue;
+        }
 
-fn display_deck(deck: &Vec<Card>) {
-    for card in deck {
-        print!("{}", card);
+        if picked_card_index < 1 {
+            continue;
+        }
+
+        deck.turn_up(picked_card_index);
     }
-    print!("\n");
 }
