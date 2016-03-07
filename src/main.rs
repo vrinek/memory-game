@@ -16,7 +16,8 @@ fn main() {
         println!("Please enter a number from 1-{}:", deck.len());
 
         let mut picked_card_index = String::new();
-        io::stdin().read_line(&mut picked_card_index)
+        io::stdin()
+            .read_line(&mut picked_card_index)
             .expect("Failed to read line");
 
         let picked_card_index: usize = match picked_card_index.trim().parse() {

@@ -21,11 +21,11 @@ impl Deck {
 
         deck
     }
-    
+
     pub fn turn_up(&mut self, index: usize) {
         self.cards[index - 1].turn_up();
     }
-    
+
     pub fn len(&self) -> usize {
         self.cards.len()
     }

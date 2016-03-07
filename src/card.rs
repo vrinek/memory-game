@@ -14,9 +14,12 @@ pub struct Card {
 
 impl Card {
     pub fn new(number: u8) -> Card {
-        Card { facing: Facing::Down, number: number }
+        Card {
+            facing: Facing::Down,
+            number: number,
+        }
     }
-    
+
     pub fn turn_up(&mut self) {
         self.facing = Facing::Up;
     }
@@ -28,6 +31,6 @@ impl fmt::Display for Card {
             Facing::Up => write!(f, "[{}]", self.number),
             Facing::Down => write!(f, "[  ]"),
         }
-        
+
     }
 }
