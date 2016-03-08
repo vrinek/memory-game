@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Facing {
     Up,
     Down,
@@ -10,6 +10,7 @@ enum Facing {
 pub struct Card {
     facing: Facing,
     number: u8,
+    scored: bool,
 }
 
 impl Card {
@@ -17,18 +18,35 @@ impl Card {
         Card {
             facing: Facing::Down,
             number: number,
+            scored: false,
         }
+    }
+
+    pub fn new_pair(number: u8) -> (Card, Card) {
+        (Card::new(number), Card::new(number))
     }
 
     pub fn turn_up(&mut self) {
         self.facing = Facing::Up;
+    }
+
+    pub fn turn_down(&mut self) {
+        self.facing = Facing::Down;
+    }
+
+    pub fn is_up(&self) -> bool {
+        self.facing == Facing::Up
+    }
+
+    pub fn is_scored(&self) -> bool {
+        self.scored
     }
 }
 
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.facing {
-            Facing::Up => write!(f, "[{}]", self.number),
+            Facing::Up => write!(f, "[{:2}]", self.number),
             Facing::Down => write!(f, "[  ]"),
         }
 

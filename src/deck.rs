@@ -11,8 +11,9 @@ impl Deck {
     pub fn new(half_size: u8) -> Deck {
         let mut deck = Deck { cards: vec![] };
         for i in 1..half_size {
-            deck.cards.push(Card::new(i));
-            deck.cards.push(Card::new(i));
+            let (a, b) = Card::new_pair(i);
+            deck.cards.push(a);
+            deck.cards.push(b);
         }
 
         let mut rng = rand::weak_rng();
@@ -23,7 +24,24 @@ impl Deck {
     }
 
     pub fn turn_up(&mut self, index: usize) {
+        self.maybe_turn_down_cards();
         self.cards[index - 1].turn_up();
+    }
+
+    fn maybe_turn_down_cards(&mut self) {
+        let mut facing_up_cards = 0;
+
+        for card in &self.cards {
+            if card.is_up() && !card.is_scored() {
+                facing_up_cards += 1;
+            }
+        }
+
+        if facing_up_cards >= 2 {
+            for card in &mut self.cards {
+                card.turn_down();
+            }
+        }
     }
 
     pub fn len(&self) -> usize {
