@@ -23,7 +23,7 @@ impl Deck {
     }
 
     fn add_cards(&mut self, half_size: u8) {
-        for i in 1..half_size {
+        for i in 1..(half_size + 1) {
             let (a, b) = Card::new_pair(i);
             self.cards.push(a);
             self.cards.push(b);
@@ -64,4 +64,29 @@ impl Deck {
         }
         print!("\n");
     }
+}
+
+#[test]
+fn it_initializes_with_the_correct_number_of_cards() {
+    let deck = Deck::new(3, None);
+    assert_eq!(deck.len(), 6);
+}
+
+#[test]
+fn it_counts_facing_up_cards() {
+    let mut deck = Deck::new(3, None);
+    deck.turn_up(2);
+    assert_eq!(deck.num_facing_up_cards, 1);
+    deck.turn_up(1);
+    assert_eq!(deck.num_facing_up_cards, 2);
+}
+
+#[test]
+fn it_turns_cards_facing_down_at_every_two_up() {
+    let mut deck = Deck::new(3, None);
+    deck.turn_up(2);
+    deck.turn_up(1);
+    assert_eq!(deck.num_facing_up_cards, 2);
+    deck.turn_up(3);
+    assert_eq!(deck.num_facing_up_cards, 1);
 }
