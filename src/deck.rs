@@ -6,7 +6,7 @@ use card::Card;
 pub struct Deck {
     rng_seed: Option<[u32; 4]>,
     cards: Vec<Card>,
-    facing_up_cards: u8,
+    num_facing_up_cards: u8,
 }
 
 impl Deck {
@@ -14,7 +14,7 @@ impl Deck {
         let mut deck = Deck {
             rng_seed: rng_seed,
             cards: Vec::with_capacity((half_size * 2) as usize),
-            facing_up_cards: 0,
+            num_facing_up_cards: 0,
         };
 
         deck.add_cards(half_size);
@@ -42,16 +42,16 @@ impl Deck {
     pub fn turn_up(&mut self, index: usize) {
         self.maybe_turn_down_cards();
         self.cards[index - 1].turn_up();
-        self.facing_up_cards += 1;
+        self.num_facing_up_cards += 1;
     }
 
     fn maybe_turn_down_cards(&mut self) {
-        if self.facing_up_cards >= 2 {
+        if self.num_facing_up_cards >= 2 {
             for card in &mut self.cards {
                 card.turn_down();
             }
+            self.num_facing_up_cards = 0;
         }
-        self.facing_up_cards = 0;
     }
 
     pub fn len(&self) -> usize {
