@@ -8,7 +8,7 @@ mod deck;
 use deck::Deck;
 
 fn main() {
-    let mut deck = Deck::new(8);
+    let mut deck = Deck::new(8, None);
 
     loop {
         deck.display_cards();

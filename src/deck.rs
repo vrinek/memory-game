@@ -1,16 +1,18 @@
 extern crate rand;
 
-use rand::Rng;
+use rand::{Rng, SeedableRng, XorShiftRng};
 use card::Card;
 
 pub struct Deck {
+    rng_seed: Option<[u32; 4]>,
     cards: Vec<Card>,
     facing_up_cards: u8,
 }
 
 impl Deck {
-    pub fn new(half_size: u8) -> Deck {
+    pub fn new(half_size: u8, rng_seed: Option<[u32; 4]>) -> Deck {
         let mut deck = Deck {
+            rng_seed: rng_seed,
             cards: Vec::with_capacity((half_size * 2) as usize),
             facing_up_cards: 0,
         };
@@ -29,7 +31,11 @@ impl Deck {
     }
 
     fn shuffle(&mut self) {
-        let mut rng = rand::weak_rng();
+        let mut rng = if let Some(seed) = self.rng_seed {
+            XorShiftRng::from_seed(seed)
+        } else {
+            rand::weak_rng()
+        };
         rng.shuffle(&mut self.cards);
     }
 

@@ -41,6 +41,5 @@ impl fmt::Display for Card {
             Facing::Up => write!(f, "[{:2}]", self.number),
             Facing::Down => write!(f, "[  ]"),
         }
-
     }
 }
