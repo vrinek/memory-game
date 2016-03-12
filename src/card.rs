@@ -33,6 +33,10 @@ impl Card {
     pub fn turn_down(&mut self) {
         self.facing = Facing::Down;
     }
+
+    pub fn is_up(&self) -> bool {
+        self.facing == Facing::Up
+    }
 }
 
 impl fmt::Display for Card {
@@ -42,4 +46,27 @@ impl fmt::Display for Card {
             Facing::Down => write!(f, "[  ]"),
         }
     }
+}
+
+#[test]
+fn it_initializes_facing_down() {
+    let card = Card::new(1);
+    assert_eq!(card.facing, Facing::Down);
+}
+
+#[test]
+fn it_can_be_turned_up() {
+    let mut card = Card::new(1);
+    card.turn_up();
+    assert_eq!(card.facing, Facing::Up);
+}
+
+#[test]
+fn it_responds_whether_it_is_up() {
+    let mut card = Card::new(1);
+    assert_eq!(card.is_up(), false);
+    card.turn_up();
+    assert_eq!(card.is_up(), true);
+    card.turn_down();
+    assert_eq!(card.is_up(), false);
 }
