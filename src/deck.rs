@@ -9,13 +9,13 @@ pub struct Deck {
 }
 
 impl Deck {
-    pub fn new(half_size: u8, rng_seed: Option<[u32; 4]>) -> Deck {
+    pub fn new(size: u8, rng_seed: Option<[u32; 4]>) -> Deck {
         let mut deck = Deck {
             rng_seed: rng_seed,
-            cards: Vec::with_capacity((half_size * 2) as usize),
+            cards: Vec::with_capacity(size as usize),
         };
 
-        deck.add_cards(half_size);
+        deck.add_cards(size / 2);
         deck.shuffle();
         deck
     }
@@ -72,15 +72,19 @@ impl Deck {
     }
 }
 
+// For reference:
+// Deck::new(6, Some([1, 2, 3, 4]));
+// [ 1][ 3][ 3][ 2][ 2][ 1]
+
 #[test]
 fn it_initializes_with_the_correct_number_of_cards() {
-    let deck = Deck::new(3, None);
+    let deck = Deck::new(6, Some([1, 2, 3, 4]));
     assert_eq!(deck.len(), 6);
 }
 
 #[test]
 fn it_counts_facing_up_cards() {
-    let mut deck = Deck::new(3, None);
+    let mut deck = Deck::new(6, Some([1, 2, 3, 4]));
     deck.turn_up(2);
     assert_eq!(deck.num_facing_up_cards(), 1);
     deck.turn_up(1);
@@ -89,7 +93,7 @@ fn it_counts_facing_up_cards() {
 
 #[test]
 fn it_turns_cards_facing_down_at_every_two_up() {
-    let mut deck = Deck::new(3, None);
+    let mut deck = Deck::new(6, Some([1, 2, 3, 4]));
     deck.turn_up(2);
     deck.turn_up(1);
     assert_eq!(deck.num_facing_up_cards(), 2);
