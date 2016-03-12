@@ -1,7 +1,7 @@
 use std::fmt;
 
 #[derive(Debug, PartialEq)]
-enum CardState {
+enum State {
     Open,
     Closed,
     Scored,
@@ -10,14 +10,14 @@ enum CardState {
 #[derive(Debug, PartialEq)]
 pub struct Card {
     number: u8,
-    state: CardState,
+    state: State,
 }
 
 impl Card {
     pub fn new(number: u8) -> Card {
         Card {
             number: number,
-            state: CardState::Closed,
+            state: State::Closed,
         }
     }
 
@@ -26,23 +26,23 @@ impl Card {
     }
 
     pub fn turn_up(&mut self) {
-        self.state = CardState::Open;
+        self.state = State::Open;
     }
 
     pub fn turn_down(&mut self) {
-        self.state = CardState::Closed;
+        self.state = State::Closed;
     }
 
     pub fn is_up(&self) -> bool {
-        self.state == CardState::Open
+        self.state == State::Open
     }
 
     pub fn is_scored(&self) -> bool {
-        self.state == CardState::Scored
+        self.state == State::Scored
     }
 
     pub fn score(&mut self) {
-        self.state = CardState::Scored;
+        self.state = State::Scored;
     }
 
     pub fn number(&self) -> u8 {
@@ -53,9 +53,9 @@ impl Card {
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.state {
-            CardState::Open => write!(f, "[{:2}]", self.number),
-            CardState::Scored => write!(f, "[{:2}]", self.number),
-            CardState::Closed => write!(f, "[  ]"),
+            State::Open => write!(f, "[{:2}]", self.number),
+            State::Scored => write!(f, "[{:2}]", self.number),
+            State::Closed => write!(f, "[  ]"),
         }
     }
 }
@@ -63,14 +63,14 @@ impl fmt::Display for Card {
 #[test]
 fn it_initializes_closed() {
     let card = Card::new(1);
-    assert_eq!(card.state, CardState::Closed);
+    assert_eq!(card.state, State::Closed);
 }
 
 #[test]
 fn it_can_be_turned_up() {
     let mut card = Card::new(1);
     card.turn_up();
-    assert_eq!(card.state, CardState::Open);
+    assert_eq!(card.state, State::Open);
 }
 
 #[test]
