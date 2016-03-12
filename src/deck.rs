@@ -73,26 +73,30 @@ impl Deck {
         }
     }
 
+    // This method iterates twice over the cards. This is not terribly effective but we can safely
+    // assume that most memory games will not exceed 100s of cards.
     fn maybe_score_cards(&mut self) {
         if self.num_facing_up_cards() != 2 {
             return;
         }
 
-        let mut matching_number = 0; // Assuming all cards have numbers > 0
-        let mut found_match = false;
-        for card in &mut self.cards {
+        let mut matching_number: Option<u8> = None;
+        for card in &self.cards {
             if card.is_up() {
-                if card.number() == matching_number {
-                    // we already have a matching number from a previous iteration of the loop
-                    found_match = true;
+                if matching_number == None {
+                    // this is the first open card, hopefully the first part of the match
+                    matching_number = Some(card.number());
+                } else if Some(card.number()) == matching_number {
+                    // the second other open card was a match
+                    break;
                 } else {
-                    // this is the first card that is up in this loop
-                    matching_number = card.number();
+                    // the second other open card was not a match
+                    matching_number = None;
                 }
             }
         }
 
-        if found_match {
+        if let Some(matching_number) = matching_number {
             for card in &mut self.cards {
                 if card.number() == matching_number {
                     card.score();
@@ -148,10 +152,19 @@ fn it_scores_same_cards() {
 
     deck.turn_up(1);
     deck.turn_up(6);
+    // Match the 1s
     assert_eq!(deck.num_scored_cards(), 2);
     assert_eq!(deck.num_facing_up_cards(), 0);
+
+    deck.turn_up(2);
+    deck.turn_up(4);
+    // No match
+    assert_eq!(deck.num_scored_cards(), 2);
+    assert_eq!(deck.num_facing_up_cards(), 2);
+
     deck.turn_up(2);
     deck.turn_up(3);
+    // Match the 3s
     assert_eq!(deck.num_scored_cards(), 4);
     assert_eq!(deck.num_facing_up_cards(), 0);
 }
