@@ -1,24 +1,23 @@
 use std::fmt;
 
 #[derive(Debug, PartialEq)]
-enum Facing {
-    Up,
-    Down,
+enum CardState {
+    Open,
+    Closed,
+    Scored,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Card {
-    facing: Facing,
     number: u8,
-    scored: bool,
+    state: CardState,
 }
 
 impl Card {
     pub fn new(number: u8) -> Card {
         Card {
-            facing: Facing::Down,
             number: number,
-            scored: false,
+            state: CardState::Closed,
         }
     }
 
@@ -27,38 +26,51 @@ impl Card {
     }
 
     pub fn turn_up(&mut self) {
-        self.facing = Facing::Up;
+        self.state = CardState::Open;
     }
 
     pub fn turn_down(&mut self) {
-        self.facing = Facing::Down;
+        self.state = CardState::Closed;
     }
 
     pub fn is_up(&self) -> bool {
-        self.facing == Facing::Up
+        self.state == CardState::Open
+    }
+
+    pub fn is_scored(&self) -> bool {
+        self.state == CardState::Scored
+    }
+
+    pub fn score(&mut self) {
+        self.state = CardState::Scored;
+    }
+
+    pub fn number(&self) -> u8 {
+        self.number
     }
 }
 
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.facing {
-            Facing::Up => write!(f, "[{:2}]", self.number),
-            Facing::Down => write!(f, "[  ]"),
+        match self.state {
+            CardState::Open => write!(f, "[{:2}]", self.number),
+            CardState::Scored => write!(f, "[{:2}]", self.number),
+            CardState::Closed => write!(f, "[  ]"),
         }
     }
 }
 
 #[test]
-fn it_initializes_facing_down() {
+fn it_initializes_closed() {
     let card = Card::new(1);
-    assert_eq!(card.facing, Facing::Down);
+    assert_eq!(card.state, CardState::Closed);
 }
 
 #[test]
 fn it_can_be_turned_up() {
     let mut card = Card::new(1);
     card.turn_up();
-    assert_eq!(card.facing, Facing::Up);
+    assert_eq!(card.state, CardState::Open);
 }
 
 #[test]

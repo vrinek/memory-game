@@ -30,6 +30,16 @@ impl Deck {
         num
     }
 
+    fn num_scored_cards(&self) -> u8 {
+        let mut num = 0;
+        for card in &self.cards {
+            if card.is_scored() {
+                num += 1;
+            }
+        }
+        num
+    }
+
     fn add_cards(&mut self, half_size: u8) {
         for i in 1..(half_size + 1) {
             let (a, b) = Card::new_pair(i);
@@ -50,12 +60,43 @@ impl Deck {
     pub fn turn_up(&mut self, index: usize) {
         self.maybe_turn_down_cards();
         self.cards[index - 1].turn_up();
+        self.maybe_score_cards();
     }
 
     fn maybe_turn_down_cards(&mut self) {
         if self.num_facing_up_cards() >= 2 {
             for card in &mut self.cards {
-                card.turn_down();
+                if card.is_up() {
+                    card.turn_down();
+                }
+            }
+        }
+    }
+
+    fn maybe_score_cards(&mut self) {
+        if self.num_facing_up_cards() != 2 {
+            return;
+        }
+
+        let mut matching_number = 0; // Assuming all cards have numbers > 0
+        let mut found_match = false;
+        for card in &mut self.cards {
+            if card.is_up() {
+                if card.number() == matching_number {
+                    // we already have a matching number from a previous iteration of the loop
+                    found_match = true;
+                } else {
+                    // this is the first card that is up in this loop
+                    matching_number = card.number();
+                }
+            }
+        }
+
+        if found_match {
+            for card in &mut self.cards {
+                if card.number() == matching_number {
+                    card.score();
+                }
             }
         }
     }
@@ -99,4 +140,18 @@ fn it_turns_cards_facing_down_at_every_two_up() {
     assert_eq!(deck.num_facing_up_cards(), 2);
     deck.turn_up(3);
     assert_eq!(deck.num_facing_up_cards(), 1);
+}
+
+#[test]
+fn it_scores_same_cards() {
+    let mut deck = Deck::new(6, Some([1, 2, 3, 4]));
+
+    deck.turn_up(1);
+    deck.turn_up(6);
+    assert_eq!(deck.num_scored_cards(), 2);
+    assert_eq!(deck.num_facing_up_cards(), 0);
+    deck.turn_up(2);
+    deck.turn_up(3);
+    assert_eq!(deck.num_scored_cards(), 4);
+    assert_eq!(deck.num_facing_up_cards(), 0);
 }
