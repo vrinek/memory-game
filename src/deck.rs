@@ -23,7 +23,7 @@ impl Deck {
     fn num_facing_up_cards(&self) -> u8 {
         let mut num = 0;
         for card in &self.cards {
-            if card.is_up() {
+            if card.is_open() {
                 num += 1;
             }
         }
@@ -63,7 +63,7 @@ impl Deck {
             return;
         }
         self.maybe_turn_down_cards();
-        self.cards[index - 1].turn_up();
+        self.cards[index - 1].open();
         self.maybe_score_cards();
     }
 
@@ -79,7 +79,7 @@ impl Deck {
 
         match self.num_facing_up_cards() {
             0 => true,
-            1 => !card.is_up(),
+            1 => !card.is_open(),
             2 => true,
             _ => unreachable!(),
         }
@@ -88,8 +88,8 @@ impl Deck {
     fn maybe_turn_down_cards(&mut self) {
         if self.num_facing_up_cards() >= 2 {
             for card in &mut self.cards {
-                if card.is_up() {
-                    card.turn_down();
+                if card.is_open() {
+                    card.close();
                 }
             }
         }
@@ -104,7 +104,7 @@ impl Deck {
 
         let mut matching_number: Option<u8> = None;
         for card in &self.cards {
-            if card.is_up() {
+            if card.is_open() {
                 if matching_number == None {
                     // this is the first open card, hopefully the first part of the match
                     matching_number = Some(card.number());

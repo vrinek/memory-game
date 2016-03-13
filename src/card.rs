@@ -1,5 +1,10 @@
 use std::fmt;
 
+// Possible state transitions:
+// START: Closed
+// Closed -> Open
+// Open -> Closed
+// Open -> Scored
 #[derive(Debug, PartialEq)]
 enum State {
     Open,
@@ -25,15 +30,19 @@ impl Card {
         (Card::new(number), Card::new(number))
     }
 
-    pub fn turn_up(&mut self) {
-        self.state = State::Open;
+    pub fn open(&mut self) {
+        if self.state == State::Closed {
+            self.state = State::Open;
+        }
     }
 
-    pub fn turn_down(&mut self) {
-        self.state = State::Closed;
+    pub fn close(&mut self) {
+        if self.state == State::Open {
+            self.state = State::Closed;
+        }
     }
 
-    pub fn is_up(&self) -> bool {
+    pub fn is_open(&self) -> bool {
         self.state == State::Open
     }
 
@@ -42,7 +51,9 @@ impl Card {
     }
 
     pub fn score(&mut self) {
-        self.state = State::Scored;
+        if self.state == State::Open {
+            self.state = State::Scored;
+        }
     }
 
     pub fn number(&self) -> u8 {
@@ -69,16 +80,16 @@ fn it_initializes_closed() {
 #[test]
 fn it_can_be_turned_up() {
     let mut card = Card::new(1);
-    card.turn_up();
+    card.open();
     assert_eq!(card.state, State::Open);
 }
 
 #[test]
-fn it_responds_whether_it_is_up() {
+fn it_responds_whether_it_is_open() {
     let mut card = Card::new(1);
-    assert_eq!(card.is_up(), false);
-    card.turn_up();
-    assert_eq!(card.is_up(), true);
-    card.turn_down();
-    assert_eq!(card.is_up(), false);
+    assert_eq!(card.is_open(), false);
+    card.open();
+    assert_eq!(card.is_open(), true);
+    card.close();
+    assert_eq!(card.is_open(), false);
 }
