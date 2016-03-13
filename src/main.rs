@@ -25,14 +25,6 @@ fn main() {
             Err(_) => continue,
         };
 
-        if picked_card_index > deck.len() {
-            continue;
-        }
-
-        if picked_card_index < 1 {
-            continue;
-        }
-
         deck.turn_up(picked_card_index);
     }
 }

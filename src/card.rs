@@ -53,9 +53,9 @@ impl Card {
 impl fmt::Display for Card {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.state {
-            State::Open => write!(f, "[{:2}]", self.number),
-            State::Scored => write!(f, "[{:2}]", self.number),
-            State::Closed => write!(f, "[  ]"),
+            State::Open => write!(f, "[{:2}o]", self.number),
+            State::Scored => write!(f, "[{:2}s]", self.number),
+            State::Closed => write!(f, "[  c]"),
         }
     }
 }

@@ -58,9 +58,31 @@ impl Deck {
     }
 
     pub fn turn_up(&mut self, index: usize) {
+        if !self.is_valid_move(index) {
+            println!("invalid move!");
+            return;
+        }
         self.maybe_turn_down_cards();
         self.cards[index - 1].turn_up();
         self.maybe_score_cards();
+    }
+
+    fn is_valid_move(&self, index: usize) -> bool {
+        if index > self.len() || index < 1 {
+            return false;
+        }
+
+        let card = &self.cards[index - 1];
+        if card.is_scored() {
+            return false;
+        }
+
+        match self.num_facing_up_cards() {
+            0 => true,
+            1 => !card.is_up(),
+            2 => true,
+            _ => unreachable!(),
+        }
     }
 
     fn maybe_turn_down_cards(&mut self) {
@@ -134,6 +156,34 @@ fn it_counts_facing_up_cards() {
     assert_eq!(deck.num_facing_up_cards(), 1);
     deck.turn_up(1);
     assert_eq!(deck.num_facing_up_cards(), 2);
+}
+
+#[test]
+fn it_does_nothing_when_asked_to_turn_up_an_open_card() {
+    let mut deck = Deck::new(6, Some([1, 2, 3, 4]));
+    deck.turn_up(1);
+    deck.turn_up(1);
+    assert_eq!(deck.num_facing_up_cards(), 1);
+    deck.turn_up(2);
+    assert_eq!(deck.num_facing_up_cards(), 2);
+}
+
+#[test]
+fn it_does_nothing_when_asked_to_turn_up_a_scored_card() {
+    let mut deck = Deck::new(6, Some([1, 2, 3, 4]));
+    deck.turn_up(1);
+    deck.turn_up(6);
+    // Match the 1s
+    assert_eq!(deck.num_scored_cards(), 2);
+    assert_eq!(deck.num_facing_up_cards(), 0);
+
+    deck.turn_up(1);
+    assert_eq!(deck.num_scored_cards(), 2);
+    assert_eq!(deck.num_facing_up_cards(), 0);
+
+    deck.turn_up(2);
+    assert_eq!(deck.num_scored_cards(), 2);
+    assert_eq!(deck.num_facing_up_cards(), 1);
 }
 
 #[test]
