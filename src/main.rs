@@ -10,7 +10,7 @@ use deck::Deck;
 fn main() {
     let mut deck = Deck::new(8, None);
 
-    loop {
+    while !deck.is_won() {
         deck.display_cards();
 
         println!("Please enter a number from 1-{}:", deck.len());
@@ -27,4 +27,6 @@ fn main() {
 
         deck.turn_up(picked_card_index);
     }
+
+    println!("Well done!");
 }

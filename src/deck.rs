@@ -137,6 +137,10 @@ impl Deck {
         }
         print!("\n");
     }
+
+    pub fn is_won(&self) -> bool {
+        self.num_scored_cards() == self.len() as u8
+    }
 }
 
 // For reference:
@@ -217,4 +221,30 @@ fn it_scores_same_cards() {
     // Match the 3s
     assert_eq!(deck.num_scored_cards(), 4);
     assert_eq!(deck.num_facing_up_cards(), 0);
+}
+
+#[test]
+fn it_is_won_when_all_cards_are_scored() {
+    let mut deck = Deck::new(6, Some([1, 2, 3, 4]));
+
+    deck.turn_up(1);
+    assert!(!deck.is_won());
+    deck.turn_up(6);
+    // Match the 1s
+    assert_eq!(deck.num_scored_cards(), 2);
+    assert!(!deck.is_won());
+
+    deck.turn_up(2);
+    assert!(!deck.is_won());
+    deck.turn_up(3);
+    // Match the 3s
+    assert_eq!(deck.num_scored_cards(), 4);
+    assert!(!deck.is_won());
+
+    deck.turn_up(4);
+    assert!(!deck.is_won());
+    deck.turn_up(5);
+    // Match the 2s
+    assert_eq!(deck.num_scored_cards(), 6);
+    assert!(deck.is_won());
 }
