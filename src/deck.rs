@@ -67,6 +67,14 @@ impl Deck {
         self.maybe_score_cards();
     }
 
+    pub fn is_open(&self, index: usize) -> bool {
+        self.cards[index - 1].is_open()
+    }
+
+    pub fn is_scored(&self, index: usize) -> bool {
+        self.cards[index - 1].is_scored()
+    }
+
     fn is_valid_move(&self, index: usize) -> bool {
         if index > self.len() || index < 1 {
             return false;
