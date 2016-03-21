@@ -32,20 +32,18 @@ impl CardInterface {
         let green = [0.0, 1.0, 0.0, 1.0];
         let blue = [0.0, 0.5, 1.0, 1.0];
 
-        let color = match self.over {
-            true => yellow,
-            false => red,
-        };
-        let color = match self.selected {
-            true => green,
-            false => color,
-        };
-        let color = match self.scored {
-            true => blue,
-            false => color,
+        let color = if self.scored {
+            blue
+        } else if self.selected {
+            green
+        } else if self.over {
+            yellow
+        } else {
+            red
         };
 
         rectangle(color, self.origin_and_size(), c.transform, g);
+        // TODO: render card's number
     }
 
     pub fn bounds(&self) -> [f64; 4] {
