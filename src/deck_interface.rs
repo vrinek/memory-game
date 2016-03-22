@@ -1,4 +1,6 @@
 use piston_window::*;
+use opengl_graphics::glyph_cache::GlyphCache;
+
 use card_interface::CardInterface;
 use deck::Deck;
 
@@ -52,11 +54,11 @@ impl DeckInterface {
         }
     }
 
-    pub fn render<G>(&self, c: Context, g: &mut G)
+    pub fn render<G>(&self, context: Context, graphics: &mut G, cache: &mut GlyphCache<'static>)
         where G: Graphics
     {
         for card in &self.cards {
-            card.render(c, g);
+            card.render(context, graphics, cache);
         }
     }
 }

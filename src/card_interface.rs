@@ -1,4 +1,5 @@
 use piston_window::*;
+use opengl_graphics::glyph_cache::GlyphCache;
 
 pub struct CardInterface {
     pub index: usize,
@@ -24,13 +25,14 @@ impl CardInterface {
         }
     }
 
-    pub fn render<G>(&self, c: Context, g: &mut G)
+    pub fn render<G>(&self, context: Context, graphics: &mut G, cache: &mut GlyphCache<'static>)
         where G: Graphics
     {
         let red = [1.0, 0.0, 0.0, 1.0];
         let yellow = [1.0, 1.0, 0.0, 1.0];
         let green = [0.0, 1.0, 0.0, 1.0];
         let blue = [0.0, 0.5, 1.0, 1.0];
+        let black = [0.0, 0.0, 0.0, 1.0];
 
         let color = if self.scored {
             blue
@@ -42,7 +44,15 @@ impl CardInterface {
             red
         };
 
-        rectangle(color, self.origin_and_size(), c.transform, g);
+        rectangle(color, self.origin_and_size(), context.transform, graphics);
+        let mut text = Text::new(14);
+        text.color = black;
+        text.draw(&"GAME OVER",
+                  cache,
+                  &context.draw_state,
+                  context.transform,
+                  graphics);
+
         // TODO: render card's number
     }
 

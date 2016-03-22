@@ -1,4 +1,7 @@
+use std::path::Path;
+
 use piston_window::*;
+use opengl_graphics::glyph_cache::GlyphCache;
 
 use deck::Deck;
 use deck_interface::DeckInterface;
@@ -6,6 +9,7 @@ use deck_interface::DeckInterface;
 pub struct App {
     deck: Deck,
     deck_interface: DeckInterface,
+    glyph_cache: GlyphCache<'static>,
 }
 
 impl App {
@@ -13,9 +17,13 @@ impl App {
         let deck = Deck::new(deck_size, None);
         let deck_interface = DeckInterface::new();
 
+        let font_path = Path::new("assets/SourceCodePro-Regular.ttf");
+        let mut cache = GlyphCache::new(font_path).unwrap();
+
         App {
             deck: deck,
             deck_interface: deck_interface,
+            glyph_cache: cache,
         }
     }
 
@@ -38,7 +46,7 @@ impl App {
 
             e.draw_2d(|c, g| {
                 clear([1.0; 4], g);
-                self.deck_interface.render(c, g);
+                self.deck_interface.render(c, g, &mut self.glyph_cache);
             });
         }
 

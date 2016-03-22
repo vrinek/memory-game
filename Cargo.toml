@@ -6,3 +6,4 @@ authors = ["vrinek <vrinek@users.noreply.github.com>"]
 [dependencies]
 rand = "*"
 piston_window = "*"
+piston2d-opengl_graphics = "*"
